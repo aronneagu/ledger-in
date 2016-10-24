@@ -30,7 +30,7 @@ fi
 current_date=$(date +%Y-%m-%d)
 description=$1
 shift
-echo "$current_date $description" >> $LEDGER_FILE
+echo "$current_date $description" >> "$LEDGER_FILE"
 
 while (( "$#" ));do
 ammount=$2
@@ -54,7 +54,7 @@ elif [ "$account_number" -gt "1" ];then
     account=${accounts[$selection]}
     echo $account
 fi
-echo -e "  $account \t$ammount" >> $LEDGER_FILE
+echo -e "  $account \t$ammount" >> "$LEDGER_FILE"
 if [ "$#" -ge "2" ];then
     shift 2
 elif [ "$#" == "1" ];then
@@ -63,4 +63,4 @@ fi
 done
 
 # for style, add a new line between transactions
-echo >> $LEDGER_FILE
+echo >> "$LEDGER_FILE"
