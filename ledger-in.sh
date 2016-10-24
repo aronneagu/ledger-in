@@ -38,7 +38,10 @@ ammount=$2
 account_number=$(grep -i $1 $LEDGER_FILE|awk '{print$1}'|sort|uniq|wc -l)
 if [ "$account_number" == "0" ];then
     echo "Account does not exist. Do you want to create [$1]?:"
-    read $account
+    read account
+    if [ "$account" == "" ];then
+        account=$1
+    fi
 elif [ "$account_number" == "1" ];then
     account=$1
 elif [ "$account_number" -gt "1" ];then
