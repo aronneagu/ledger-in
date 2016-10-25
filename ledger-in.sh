@@ -15,6 +15,9 @@
 #might solve spacing issue of currency before or after sum
 
 USAGE="usage"
+exec 5> ledger.log
+BASH_XTRACEFD="5"
+set -x
 
 # check if LEDGER_FILE exists
 if [ ! -f "$LEDGER_FILE" ];then
@@ -36,6 +39,8 @@ while (( "$#" ));do
 ammount=$2
 # get the account name, based on $1
 account_number=$(grep -i $1 "$LEDGER_FILE"|awk '{print$1}'|sort|uniq|wc -l)
+echo "argument is $1"
+echo "number of accounts is $account_number"
 if [ "$account_number" == "0" ];then
     echo "Account does not exist. Do you want to create [$1]?:"
     read account
@@ -43,7 +48,7 @@ if [ "$account_number" == "0" ];then
         account=$1
     fi
 elif [ "$account_number" == "1" ];then
-    account=$1
+    account=$(grep -i $1 "$LEDGER_FILE"|awk '{print$1}'|uniq)
 elif [ "$account_number" -gt "1" ];then
     echo "Select account you want to use:"
     declare -a accounts=($(grep -i $1 "$LEDGER_FILE"|awk '{print$1}'|sort|uniq))
