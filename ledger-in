@@ -40,10 +40,11 @@ ammount=$2
 # get the account name, based on $1
 account_number=$(grep -i $1 "$LEDGER_FILE"|awk '{print$1}'|sort|uniq|wc -l)
 if [ "$account_number" == "0" ];then
-    echo "Account does not exist. Do you want to create [$1]?:"
-    read account
-    if [ "$account" == "" ];then
+    read -p "Account $1 does not exist. Do you want to create [Y/n]?: " account
+    if [ -z "$account" ] || [ "$account" == "y" ];then
         account=$1
+    else
+        exit 1
     fi
 elif [ "$account_number" == "1" ];then
     account=$(grep -i $1 "$LEDGER_FILE"|awk '{print$1}'|uniq)
