@@ -17,7 +17,7 @@
 USAGE="usage"
 
 # check if LEDGER_FILE exists
-if [ ! -f $LEDGER_FILE ];then
+if [ ! -f "$LEDGER_FILE" ];then
     echo "Ledger file not found"
 fi
 
@@ -35,7 +35,7 @@ echo "$current_date $description" >> "$LEDGER_FILE"
 while (( "$#" ));do
 ammount=$2
 # get the account name, based on $1
-account_number=$(grep -i $1 $LEDGER_FILE|awk '{print$1}'|sort|uniq|wc -l)
+account_number=$(grep -i $1 "$LEDGER_FILE"|awk '{print$1}'|sort|uniq|wc -l)
 if [ "$account_number" == "0" ];then
     echo "Account does not exist. Do you want to create [$1]?:"
     read account
@@ -46,7 +46,7 @@ elif [ "$account_number" == "1" ];then
     account=$1
 elif [ "$account_number" -gt "1" ];then
     echo "Select account you want to use:"
-    declare -a accounts=($(grep -i $1 $LEDGER_FILE|awk '{print$1}'|sort|uniq))
+    declare -a accounts=($(grep -i $1 "$LEDGER_FILE"|awk '{print$1}'|sort|uniq))
     for i in $(seq 0 $(( ${#accounts[@]}-1 )) );do
         echo "[$i] ${accounts[i]}"
     done
