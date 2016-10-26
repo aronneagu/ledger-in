@@ -1,18 +1,15 @@
 #!/bin/bash
 # arguments: transaction_description account sum [commodity] [account sum [commodity]]
-# check if LEDGER_FILE exists
-# get date and transaction description and add to ledger file
 # separate command line arguments based on tokens into triple of account_name-sum-commodity
-# account name can be partial match, use grep case insensitive. if the account name does not exist promt to create it, suggest default name the name give as arument, but the user can add a new name. if there are multiple matching accounts, list all matches and ask user to choose which one to use
-# last account can have missing the commodity, because ledger allows it
-# commodity is just another name for currency
-# allow for defining a default commodity
 # tell where to put the commodity, prefix or suffix of the sum
 # make it as simple as possible and not a tad more complicated
 # might be complicated adding currency. just use a default currency defined in this script
 #currency="$"
 #currency=" EUR"
 #might solve spacing issue of currency before or after sum
+
+# Variables defined by use
+currency=""
 
 USAGE="usage"
 #exec 5> ledger.log
@@ -62,7 +59,7 @@ elif [ "$account_number" -gt "1" ];then
         account=${accounts[$selection]}
     fi
 fi
-echo -e "  $account \t$ammount" >> "$LEDGER_FILE"
+echo -e "  $account \t$ammount $currency" >> "$LEDGER_FILE"
 if [ "$#" -ge "2" ];then
     shift 2
 elif [ "$#" == "1" ];then
