@@ -1,8 +1,4 @@
 #!/bin/bash
-# arguments: transaction_description account sum [commodity] [account sum [commodity]]
-# separate command line arguments based on tokens into triple of account_name-sum-commodity
-# tell where to put the commodity, prefix or suffix of the sum
-# make it as simple as possible and not a tad more complicated
 # might be complicated adding currency. just use a default currency defined in this script
 #currency="$"
 #currency=" EUR"
@@ -30,39 +26,42 @@ while getopts ":hf:" opt; do
 done
 shift $((OPTIND-1))
 
-# check if LEDGER_FILE exists
-if [ ! -f "$LEDGER_FILE" ];then
-    echo "Ledger file not found"
-    exit 1
-fi
-
 # if number of arguments is 0 then print usage
 if [ "$#" -le "2" ]; then
     echo $usage
     exit 1
 fi
 
+# check if LEDGER_FILE exists
+if [ ! -f "$LEDGER_FILE" ];then
+    echo "Ledger file not found. Specify one using -f option"
+    exit 1
+fi
+
+# create temporary file
+LEDGER_TEMP="${LEDGER_FILE}.tmp"
+cp $LEDGER_FILE $LEDGER_TEMP
+
 current_date=$(date +%Y-%m-%d)
 description=$1
 shift
-echo "$current_date $description" >> "$LEDGER_FILE"
+echo "$current_date $description" >> "$LEDGER_TEMP"
 
+# iterate over arguments and process each <account> <ammount> pair
 while (( "$#" ));do
 ammount=$2
 # get the account name, based on $1
-account_number=$(grep -i $1 "$LEDGER_FILE"|awk '{print$1}'|sort|uniq|wc -l)
+account_number=$(grep -i $1 "$LEDGER_TEMP"|awk '{print$1}'|sort|uniq|wc -l)
 if [ "$account_number" == "0" ];then
-    read -p "Account $1 does not exist. Do you want to create [Y/n]?: " account
-    if [ -z "$account" ] || [ "$account" == "y" ];then
+    read -p "Account $1 does not exist. Press ENTER to create $1 or specify another name: " account
+    if [ -z "$account" ]; then
         account=$1
-    else
-        exit 1
     fi
 elif [ "$account_number" == "1" ];then
-    account=$(grep -i $1 "$LEDGER_FILE"|awk '{print$1}'|uniq)
+    account=$(grep -i $1 "$LEDGER_TMP"|awk '{print$1}'|uniq)
 elif [ "$account_number" -gt "1" ];then
     echo "Select account you want to use:"
-    declare -a accounts=($(grep -i $1 "$LEDGER_FILE"|awk '{print$1}'|sort|uniq))
+    declare -a accounts=($(grep -i $1 "$LEDGER_TEMP"|awk '{print$1}'|sort|uniq))
     for i in $(seq 0 $(( ${#accounts[@]}-1 )) );do
         echo "[$i] ${accounts[i]}"
     done
@@ -73,7 +72,7 @@ elif [ "$account_number" -gt "1" ];then
         account=${accounts[$selection]}
     fi
 fi
-echo -e "  $account \t$ammount $currency" >> "$LEDGER_FILE"
+echo -e "  $account \t$ammount $currency" >> "$LEDGER_TEMP"
 if [ "$#" -ge "2" ];then
     shift 2
 elif [ "$#" == "1" ];then
@@ -82,4 +81,16 @@ fi
 done
 
 # for style, add a new line between transactions
-echo >> "$LEDGER_FILE"
+echo >> "$LEDGER_TEMP"
+
+# show what would be added to ledger file and ask user to confirm addition
+echo "The following data will be appended to $LEDGER_FILE"
+comm --nocheck-order -13 $LEDGER_FILE $LEDGER_TEMP
+read -p "Do you agree? [Y/n]: " selection
+if [ -z "$selection" ] || [ "$selection" == "y" ] || [ "$selection" == "Y" ]
+then
+    cp $LEDGER_TEMP $LEDGER_FILE
+    rm -f $LEDGER_TEMP
+else
+    rm -f $LEDGER_TEMP
+fi
