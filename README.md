@@ -15,9 +15,9 @@ Additionally, ledger-in writes in the same file, unlike ledger-add which writes 
 `ledger-in [-f] <description> <account-1> <ammount-1> <account-2> <ammount-2> [...]`
 
 The ledger file to use is read either from the environment variable LEDGER_FILE or passed as an argument with option -f.
-The <description> is a description of the transaction. If you want to pass a long description that contains spaces you need to 
-surround it with double quotes. Afterwards the program takes an unlimited number of pairs of `<account> <ammount>`. The last
-`<ammount>` is optional. As an example, considering LEDGER_FILE environment variable is set and points to a ledger file:
+The `<description>` is a description of the transaction. If you want to pass a long description that contains spaces you need to surround it with double quotes. Afterwards the program takes an unlimited number of pairs of `<account> <ammount>`. The last
+`<ammount>` is optional. Considering LEDGER_FILE environment variable is set and points to a ledger file, the following is
+a valid use of the program
 
 `ledger-in "ATM Withdrawal" Asets:Checking -20 Assets:Cash 20`
 
