@@ -52,13 +52,14 @@ while (( "$#" ));do
 ammount=$2
 # get the account name, based on $1
 account_number=$(grep -i $1 "$LEDGER_TEMP"|awk '{print$1}'|sort|uniq|wc -l)
+echo "account number is $account_number"
 if [ "$account_number" == "0" ];then
     read -p "Account $1 does not exist. Press ENTER to create $1 or specify another name: " account
     if [ -z "$account" ]; then
         account=$1
     fi
 elif [ "$account_number" == "1" ];then
-    account=$(grep -i $1 "$LEDGER_TMP"|awk '{print$1}'|uniq)
+    account=$(grep -i $1 "$LEDGER_TEMP"|awk '{print$1}'|uniq)
 elif [ "$account_number" -gt "1" ];then
     echo "Select account you want to use:"
     declare -a accounts=($(grep -i $1 "$LEDGER_TEMP"|awk '{print$1}'|sort|uniq))
