@@ -11,10 +11,23 @@
 # Variables defined by use
 currency=""
 
-USAGE="usage"
+usage="Usage: $0 -f <ledger_file> <description> <account1> <ammount1> <account2> <ammount2> [...]"
 #exec 5> ledger.log
 #BASH_XTRACEFD="5"
 #set -x
+
+while getopts ":hf:" opt; do
+    case $opt in    
+    h)  echo $usage
+        exit 0
+        ;;
+    f)  LEDGER_FILE=$OPTARG
+        ;;
+    \?) echo "Invalid option: -$OPTARG"
+        exit 1
+        ;;
+    esac
+done
 
 # check if LEDGER_FILE exists
 if [ ! -f "$LEDGER_FILE" ];then
@@ -24,7 +37,7 @@ fi
 
 # if number of arguments is 0 then print usage
 if [ "$#" -le "2" ]; then
-    echo $USAGE
+    echo $usage
     exit 1
 fi
 
