@@ -28,6 +28,7 @@ while getopts ":hf:" opt; do
         ;;
     esac
 done
+shift $((OPTIND-1))
 
 # check if LEDGER_FILE exists
 if [ ! -f "$LEDGER_FILE" ];then
