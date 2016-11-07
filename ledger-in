@@ -73,10 +73,11 @@ elif [ "$account_number" -gt "1" ];then
         account=${accounts[$selection]}
     fi
 fi
-echo -e "  $account \t$ammount $currency" >> "$LEDGER_TEMP"
 if [ "$#" -ge "2" ];then
+echo -e "  $account \t$ammount $currency" >> "$LEDGER_TEMP"
     shift 2
 elif [ "$#" == "1" ];then
+echo -e "  $account \t$ammount" >> "$LEDGER_TEMP"
     shift
 fi
 done
