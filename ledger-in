@@ -74,11 +74,15 @@ elif [ "$account_number" -gt "1" ];then
     fi
 fi
 if [ "$#" -ge "2" ];then
-    echo -e "  $account \t$ammount $currency" >> "$LEDGER_TEMP"
     shift 2
 elif [ "$#" == "1" ];then
-    echo -e "  $account \t$ammount" >> "$LEDGER_TEMP"
     shift
+fi
+# if there is only one argument left do not add currency, otherwise add currency
+if [ "@#" -ge "2" ]; then
+    echo -e "  $account \t$ammount $currency" >> "$LEDGER_TEMP"
+elif [ "@#" == "1" ]; then
+    echo -e "  $account \t$ammount" >> "$LEDGER_TEMP"
 fi
 done
 
