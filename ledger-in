@@ -87,7 +87,7 @@ echo >> "$LEDGER_TEMP"
 
 # show what would be added to ledger file and ask user to confirm addition
 echo "The following data will be appended to $LEDGER_FILE"
-comm --nocheck-order -13 $LEDGER_FILE $LEDGER_TEMP
+comm -13 $LEDGER_FILE $LEDGER_TEMP
 read -p "Do you agree? [Y/n]: " selection
 if [ -z "$selection" ] || [ "$selection" == "y" ] || [ "$selection" == "Y" ]
 then
