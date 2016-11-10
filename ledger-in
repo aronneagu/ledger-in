@@ -5,7 +5,7 @@
 #might solve spacing issue of currency before or after sum
 
 # Variables defined by use
-currency=""
+currency="EUR"
 
 usage="Usage: $0 -f <ledger_file> <description> <account1> <ammount1> <account2> <ammount2> [...]"
 #exec 5> ledger.log
@@ -52,7 +52,6 @@ while (( "$#" ));do
 ammount=$2
 # get the account name, based on $1
 account_number=$(grep -i $1 "$LEDGER_TEMP"|awk '{print$1}'|sort|uniq|wc -l)
-echo "account number is $account_number"
 if [ "$account_number" == "0" ];then
     read -p "Account $1 does not exist. Press ENTER to create $1 or specify another name: " account
     if [ -z "$account" ]; then
@@ -73,18 +72,13 @@ elif [ "$account_number" -gt "1" ];then
         account=${accounts[$selection]}
     fi
 fi
+# if there is only one argument left do not add currency, otherwise add currency
 if [ "$#" -ge "2" ];then
-echo -e "  $account \t$ammount $currency" >> "$LEDGER_TEMP"
+    echo -e "  $account \t$ammount $currency" >> "$LEDGER_TEMP"
     shift 2
 elif [ "$#" == "1" ];then
-echo -e "  $account \t$ammount" >> "$LEDGER_TEMP"
-    shift
-fi
-# if there is only one argument left do not add currency, otherwise add currency
-if [ "@#" -ge "2" ]; then
-    echo -e "  $account \t$ammount $currency" >> "$LEDGER_TEMP"
-elif [ "@#" == "1" ]; then
     echo -e "  $account \t$ammount" >> "$LEDGER_TEMP"
+    shift
 fi
 done
 
