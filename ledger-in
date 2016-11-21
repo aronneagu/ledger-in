@@ -12,12 +12,16 @@ usage="Usage: $0 -f <ledger_file> <description> <account1> <ammount1> <account2>
 #BASH_XTRACEFD="5"
 #set -x
 
-while getopts ":hf:" opt; do
+current_date=$(date +%Y-%m-%d)
+
+while getopts ":hf:d:" opt; do
     case $opt in    
     h)  echo $usage
         exit 0
         ;;
     f)  LEDGER_FILE=$OPTARG
+        ;;
+    d)  current_date=$OPTARG
         ;;
     \?) echo "Invalid option: -$OPTARG"
         exit 1
@@ -42,7 +46,6 @@ fi
 LEDGER_TEMP="${LEDGER_FILE}.tmp"
 cp $LEDGER_FILE $LEDGER_TEMP
 
-current_date=$(date +%Y-%m-%d)
 description=$1
 shift
 echo "$current_date $description" >> "$LEDGER_TEMP"
